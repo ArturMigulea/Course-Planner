@@ -7,23 +7,30 @@
 }
 
 .field span {
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
+/* Inputs / selects */
 .field input,
 .field select {
   padding: 6px 8px;
   border-radius: 6px;
-  border: 1px solid #1f2937;
-  background: #020617;
-  color: #e5e7eb;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-main);
   font-size: 0.85rem;
+}
+
+.field input::placeholder,
+.field select::placeholder {
+  color: var(--text-softer);
 }
 
 .field input:focus,
 .field select:focus {
-  outline: 1px solid #3b82f6;
-  border-color: #3b82f6;
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 1px;
+  border-color: var(--accent-focus);
 }
 
 .filters-row {
@@ -38,7 +45,7 @@
   gap: 6px;
   font-size: 0.85rem;
   margin-top: 6px;
-  color: #cbd5f5;
+  color: var(--text-main);
 }
 
 .checkbox-field input {
@@ -46,6 +53,7 @@
   height: 14px;
 }
 
+/* Buttons */
 .btn {
   border-radius: 100px;
   border: 1px solid transparent;
@@ -54,32 +62,59 @@
   width: 100px;
   font-size: 0.78rem;
   cursor: pointer;
-  background: #111827;
-  color: #e5e7eb;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
 }
 
-.btn:hover {
-  transform: translateY(-1px);
+:root[data-theme="dark"] .btn:hover {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.8);
 }
 
+/* Primary: Garnet */
 .btn-primary {
-  background: #2563eb;
-  border-color: #1d4ed8;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary-strong);
+  color: var(--color-white);
 }
 
+.btn-primary:hover {
+  background: var(--accent-primary-strong);
+  border-color: var(--accent-primary-strong);
+}
+
+/* Secondary: garnet outline / light fill */
 .btn-secondary {
-  background: #9c0000;
-  border-color: #9c0000;
+  background: transparent;
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
+.btn-secondary:hover {
+  background: rgba(143, 0, 26, 0.08);
+}
+
+/* Ghost: neutral outline */
 .btn-ghost {
   background: transparent;
-  border-color: #1f2937;
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-surface-soft);
 }
 
 .btn-sm {
   padding: 4px 8px;
   font-size: 0.75rem;
+  height: auto;
 }
 
 .btn-xs {
@@ -87,6 +122,7 @@
   font-size: 0.72rem;
 }
 
+/* Badge / pill treatments */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -94,10 +130,12 @@
   min-width: 24px;
   padding: 2px 6px;
   border-radius: 999px;
-  background: #1f2937;
+  background: var(--chip-badge-bg);
   font-size: 0.75rem;
+  color: var(--text-main);
 }
 
+/* Generic pill container */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -106,12 +144,14 @@
   font-size: 0.7rem;
 }
 
+/* OK state – uOttawa green */
 .pill-ok {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
+  background: var(--accent-positive-bg);
+  color: var(--accent-positive-text);
 }
 
+/* Warn / error – uOttawa garnet */
 .pill-warn {
-  background: rgba(249, 115, 22, 0.18);
-  color: #fdba74;
+  background: var(--accent-warn-bg);
+  color: var(--accent-warn-text);
 }

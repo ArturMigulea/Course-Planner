@@ -1,0 +1,45 @@
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center;
+}
+
+/* Base fill/stroke — adjust as needed */
+.sun-and-moon > :is(.moon, .sun) {
+  fill: currentColor;
+}
+
+.sun-and-moon > .sun-beams {
+  stroke: currentColor;
+  stroke-width: 2px;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #222; /* dark icon for light theme */
+}
+
+/* when dark mode is active */
+[data-theme="dark"] .theme-toggle {
+  color: #fff; /* light icon for dark theme */
+}
+
+/* Dark theme adjustments (optional, remove if you want *no* theme logic) */
+[data-theme="dark"] .sun-and-moon > .sun {
+  transform: scale(1.75);
+}
+
+[data-theme="dark"] .sun-and-moon > .sun-beams {
+  opacity: 0;
+}
+
+[data-theme="dark"] .sun-and-moon > .moon > circle {
+  transform: translateX(-7px);
+}
+
+@supports (cx: 1) {
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    cx: 17;
+    transform: none;
+  }
+}

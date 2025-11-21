@@ -1,13 +1,26 @@
-// src/App.jsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { COURSES, DEPARTMENTS, YEARS } from "./data/courses.js";
 import { SECTIONS } from "./data/sections.js";
 
 import ScheduleSections from "./components/ScheduleSections.jsx";
 import PersonalTimeForm from "./components/PersonalTimeForm.jsx";
 import Timetable from "./components/Timetable.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 import { conflictBetweenSectionAndItems, conflictBetweenBlockAndItems, } from "./utils/scheduleUtils.js";
+
+const toggleTheme = () => {
+  const root = document.documentElement;
+  const isDark = root.getAttribute("data-theme") === "dark";
+
+  if (isDark) {
+    root.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+  } else {
+    root.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+  }
+};
 
 function App() {
   // course search / filters
@@ -15,6 +28,23 @@ function App() {
   const [department, setDepartment] = useState("ALL");
   const [year, setYear] = useState("ALL");
   const [eligibleOnly, setEligibleOnly] = useState(false);
+
+
+  // Auto set window to dark mode
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    const root = document.documentElement;
+
+    if (saved === "dark") {
+      root.setAttribute("data-theme", "dark");
+    } else if (saved === "light") {
+      root.removeAttribute("data-theme");
+    } else {
+      // Default if no saved preference
+      root.setAttribute("data-theme", "dark");
+    }
+  }, []);
+
 
   // student academic context
   const [completedInput, setCompletedInput] = useState(
@@ -201,15 +231,18 @@ function App() {
   return (
     <div className="app-root">
       <header className="app-header">
-        <h1>uOttawa Smart Planner</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+          <h1>uOttawa Smart Planner</h1>
+          <ThemeToggle toggleTheme={toggleTheme} />
+        </div>
         <p className="app-subtitle">
-          Smarter course search &amp; interactive schedule builder.
+          Smarter course search and interactive schedule builder.
         </p>
       </header>
 
       <main className="app-layout">
         {/* LEFT: search & basket */}
-        <section className="panel panel-left">
+        <section className="panel">
           <h2>Course Search</h2>
 
           <div className="card">
@@ -228,148 +261,155 @@ function App() {
             </label>
           </div>
 
-          <div className="card filters-card">
-            <div className="filters-row">
-              <label className="field">
-                <span>Search</span>
+          <div className="card"> 
+            <div className="filters-card">
+              <div className="filters-row">
+                <label className="field">
+                  <span>Search</span>
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Code or title (e.g. ADM1300)"
+                  />
+                </label>
+
+                <label className="field">
+                  <span>Department</span>
+                  <select
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                  >
+                    <option value="ALL">All</option>
+                    {DEPARTMENTS.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="field">
+                  <span>Year level</span>
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                  >
+                    <option value="ALL">All</option>
+                    {YEARS.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <label className="checkbox-field">
                 <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Code or title (e.g. ADM1300)"
+                  type="checkbox"
+                  checked={eligibleOnly}
+                  onChange={(e) => setEligibleOnly(e.target.checked)}
                 />
-              </label>
-
-              <label className="field">
-                <span>Department</span>
-                <select
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                >
-                  <option value="ALL">All</option>
-                  {DEPARTMENTS.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="field">
-                <span>Year level</span>
-                <select
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                >
-                  <option value="ALL">All</option>
-                  {YEARS.map((y) => (
-                    <option key={y} value={y}>
-                      {y}
-                    </option>
-                  ))}
-                </select>
+                <span>Show only courses I&apos;m eligible for</span>
               </label>
             </div>
 
-            <label className="checkbox-field">
-              <input
-                type="checkbox"
-                checked={eligibleOnly}
-                onChange={(e) => setEligibleOnly(e.target.checked)}
-              />
-              <span>Show only courses I&apos;m eligible for</span>
-            </label>
-          </div>
+            <div className="course-list-card">
+              <div className="course-list-header">
+                <h3>
+                  Results <span className="badge">{filteredCourses.length}</span>
+                </h3>
+              </div>
 
-          <div className="card course-list-card">
-            <div className="course-list-header">
-              <h3>
-                Results <span className="badge">{filteredCourses.length}</span>
-              </h3>
-            </div>
+              <div className="course-list">
+                {filteredCourses.map((course) => {
+                  const inBasket = basket.includes(course.code);
+                  const eligible = isEligible(course);
+                  const missingPrereqs = course.prereqs.filter(
+                    (p) => !completedSet.has(p)
+                  );
 
-            <div className="course-list">
-              {filteredCourses.map((course) => {
-                const inBasket = basket.includes(course.code);
-                const eligible = isEligible(course);
-                const missingPrereqs = course.prereqs.filter(
-                  (p) => !completedSet.has(p)
-                );
+                  const hasSectionInTerm = sectionsForTerm.some(
+                    (s) =>
+                      s.courseCode === course.code &&
+                      selectedSectionIds.includes(s.id)
+                  );
 
-                const hasSectionInTerm = sectionsForTerm.some(
-                  (s) =>
-                    s.courseCode === course.code &&
-                    selectedSectionIds.includes(s.id)
-                );
+                  return (
+                    <div key={course.code} className="course-item">
+                      <div className="course-main">
+                        <div className="course-title-row">
+                          <span className="course-code">{course.code}</span>
+                          <span className="course-title">{course.title}</span>
 
-                return (
-                  <div key={course.code} className="course-item">
-                    <div className="course-main">
-                      <div className="course-title-row">
-                        <span className="course-code">{course.code}</span>
-                        <span className="course-title">{course.title}</span>
+                          <label
+                            className="checkbox-field"
+                            style={{ marginLeft: "8px" }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={hasSectionInTerm}
+                              onChange={(e) =>
+                                handleToggleCourseSchedule(
+                                  course.code,
+                                  e.target.checked
+                                )
+                              }
+                            />
+                            <span style={{ fontSize: "0.7rem" }}>
+                              On schedule
+                            </span>
+                          </label>
+                        </div>
 
-                        <label
-                          className="checkbox-field"
-                          style={{ marginLeft: "8px" }}
+                        <div className="course-meta">
+                          <span>Dept: {course.department}</span>
+                          <span>Year: {course.year}</span>
+                          <span>Credits: {course.credits}</span>
+                        </div>
+                        <div className="course-prereqs">
+                          {course.prereqs.length === 0 ? (
+                            <span className="pill pill-ok">
+                              No prerequisites
+                            </span>
+                          ) : eligible ? (
+                            <span className="pill pill-ok">
+                              Eligible ✓ (prereqs met)
+                            </span>
+                          ) : (
+                            <span className="pill pill-warn">
+                              Missing: {missingPrereqs.join(", ")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <button
+                          className={`btn btn-xs ${
+                            inBasket ? "btn-secondary" : "btn-primary"
+                          }`}
+                          onClick={() => toggleBasket(course.code)}
                         >
-                          <input
-                            type="checkbox"
-                            checked={hasSectionInTerm}
-                            onChange={(e) =>
-                              handleToggleCourseSchedule(
-                                course.code,
-                                e.target.checked
-                              )
-                            }
-                          />
-                          <span style={{ fontSize: "0.7rem" }}>
-                            On schedule
-                          </span>
-                        </label>
-                      </div>
-
-                      <div className="course-meta">
-                        <span>Dept: {course.department}</span>
-                        <span>Year: {course.year}</span>
-                        <span>Credits: {course.credits}</span>
-                      </div>
-                      <div className="course-prereqs">
-                        {course.prereqs.length === 0 ? (
-                          <span className="pill pill-ok">
-                            No prerequisites
-                          </span>
-                        ) : eligible ? (
-                          <span className="pill pill-ok">
-                            Eligible ✓ (prereqs met)
-                          </span>
-                        ) : (
-                          <span className="pill pill-warn">
-                            Missing: {missingPrereqs.join(", ")}
-                          </span>
-                        )}
+                          {inBasket ? "Remove" : "Add To Basket"}
+                        </button>
                       </div>
                     </div>
-
-                    <button
-                      className={`btn btn-xs ${
-                        inBasket ? "btn-secondary" : "btn-primary"
-                      }`}
-                      onClick={() => toggleBasket(course.code)}
-                    >
-                      {inBasket ? "Remove" : "Add To Basket"}
-                    </button>
-                  </div>
-                );
-              })}
-              {filteredCourses.length === 0 && (
-                <p className="empty-state">
-                  No courses match your filters.
-                </p>
-              )}
+                  );
+                })}
+                {filteredCourses.length === 0 && (
+                  <p className="empty-state">
+                    No courses match your filters.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
+        </section>
 
+        {/* RIGHT: schedule builder */}
+        <section className="panel">
+          <h2>Dynamic Schedule Builder</h2>
           <div className="card basket-card">
             <div className="card-header-row">
               <h3>Course basket</h3>
@@ -383,36 +423,30 @@ function App() {
               <ul className="basket-list">
                 {basketCourses.map((c) => (
                   <li key={c.code}>
-                    <span className="basket-code">{c.code}</span>
-                    <span className="basket-title">{c.title}</span>
-                    <button
-                      className="btn btn-xs btn-ghost"
-                      onClick={() => toggleBasket(c.code)}
-                    >
-                      ✕
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center"}}>
+                      <button
+                        className="btn btn-xs btn-ghost"
+                        onClick={() => toggleBasket(c.code)}
+                      >
+                        Remove
+                      </button>
+
+                      {/* Sections for this course */}
+                      <ScheduleSections
+                        courseCode={c.code}
+                        sectionsForTerm={sectionsForTerm}
+                        selectedSectionIds={selectedSectionIds}
+                        onAddSection={handleAddSection}
+                        onRemoveSection={handleRemoveSection}
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-        </section>
-
-        {/* RIGHT: schedule builder */}
-        <section className="panel panel-right">
-          <h2>Dynamic Schedule Builder</h2>
-
           <div className="card schedule-grid">
             <div className="schedule-column">
-              <ScheduleSections
-                term={selectedTerm}
-                sectionsForTerm={sectionsForTerm}
-                basket={basket}
-                selectedSectionIds={selectedSectionIds}
-                onAddSection={handleAddSection}
-                onRemoveSection={handleRemoveSection}
-              />
-
               <PersonalTimeForm onAdd={handleAddPersonalBlock} />
             </div>
 
@@ -424,7 +458,6 @@ function App() {
               />
             </div>
           </div>
-
           {message && <div className="message-bar">{message}</div>}
         </section>
       </main>

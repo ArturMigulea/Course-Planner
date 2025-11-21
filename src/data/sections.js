@@ -1,5 +1,3 @@
-// src/data/sections.js
-
 // days: array of weekday strings used in the timetable
 export const SECTIONS = [
   {
@@ -25,7 +23,6 @@ export const SECTIONS = [
     start: "10:00",
     end: "11:30",
     instructor: "TBD",
-    mode: "Hybrid",
   },
   {
     id: "ADM2381-F-LEC1",
@@ -66,24 +63,5 @@ export const SECTIONS = [
     start: "09:00",
     end: "12:00",
     instructor: "TBD",
-  },
-  // A couple of winter examples
-  {
-    id: "ADM1300-W-LEC1",
-    courseCode: "ADM1300",
-    term: "W",
-    days: ["Mon", "Wed"],
-    start: "08:30",
-    end: "10:00",
-    instructor: "TBD",
-  },
-  {
-    id: "CSI2132-W-LEC1",
-    courseCode: "CSI2132",
-    term: "W",
-    days: ["Tue", "Thu"],
-    start: "14:30",
-    end: "16:00",
-    instructor: "TBD",
-  },
+  }
 ];
