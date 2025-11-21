@@ -1,0 +1,213 @@
+.course-list-card {
+  max-height: 380px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.course-list {
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #111827;
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.course-code {
+  font-weight: 600;
+  color: #38bdf8;
+  font-size: 0.9rem;
+}
+
+.course-title {
+  font-size: 0.9rem;
+}
+
+.course-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.course-prereqs {
+  margin-top: 4px;
+}
+
+.basket-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.basket-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.basket-code {
+  font-weight: 600;
+  color: #38bdf8;
+  font-size: 0.85rem;
+}
+
+.basket-title {
+  flex: 1;
+  font-size: 0.8rem;
+}
+
+.empty-state {
+  margin: 4px 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Sections list */
+.section-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.section-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #0f172a;
+}
+
+.section-title-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.section-course-code {
+  font-weight: 600;
+  color: #38bdf8;
+  font-size: 0.85rem;
+}
+
+.section-id {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.section-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Personal block form */
+.personal-block-form .field-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Timetable */
+.timetable {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.timetable-header {
+  margin-bottom: 6px;
+}
+
+.timetable-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.timetable-day {
+  background: #020617;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+}
+
+.timetable-day-header {
+  padding: 4px 6px;
+  border-bottom: 1px solid #0f172a;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.timetable-day-body {
+  padding: 4px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timetable-empty {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.timetable-block {
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 0.75rem;
+}
+
+.block-course {
+  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid #1d4ed8;
+}
+
+.block-personal {
+  background: rgba(234, 88, 12, 0.18);
+  border: 1px solid #c2410c;
+}
+
+.block-label {
+  font-weight: 600;
+}
+
+.block-time {
+  font-size: 0.7rem;
+  color: #e5e7eb;
+}
