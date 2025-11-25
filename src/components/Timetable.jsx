@@ -7,22 +7,38 @@ function Timetable({ term, sections, personalBlocks }) {
     const result = {};
     DAYS.forEach((d) => (result[d] = []));
 
-    // sections (multi-day)
+    // sections (multi-day, using meetings[])
     sections.forEach((sec) => {
       if (sec.term && sec.term !== term) return;
-      sec.days.forEach((day) => {
-        if (!result[day]) result[day] = [];
-        result[day].push({
-          id: sec.id + ":" + day,
-          label: sec.courseCode,
+
+      // Support new structure with meetings[]
+      let meetings = [];
+      if (Array.isArray(sec.meetings) && sec.meetings.length > 0) {
+        meetings = sec.meetings;
+      } else if (sec.days && sec.start && sec.end) {
+        // Fallback if you still have any old-style sections
+        meetings = sec.days.map((day) => ({
+          day,
           start: sec.start,
           end: sec.end,
+        }));
+      }
+
+      meetings.forEach((m) => {
+        const day = m.day;
+        if (!result[day]) result[day] = [];
+
+        result[day].push({
+          id: `${sec.id}:${day}:${m.start}`,
+          label: sec.courseCode,
+          start: m.start,
+          end: m.end,
           type: "course",
         });
       });
     });
 
-    // personal blocks
+    // personal blocks (these already have day/start/end)
     personalBlocks.forEach((pb) => {
       if (pb.term && pb.term !== term) return;
       if (!result[pb.day]) result[pb.day] = [];
@@ -37,10 +53,9 @@ function Timetable({ term, sections, personalBlocks }) {
 
     // sort by time
     for (const d of DAYS) {
-      result[d].sort(
-        (a, b) => toMinutes(a.start) - toMinutes(b.start)
-      );
+      result[d].sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
     }
+
     return result;
   }, [term, sections, personalBlocks]);
 
@@ -64,16 +79,13 @@ function Timetable({ term, sections, personalBlocks }) {
                         : "block-personal"
                     }`}
                   >
-                    <div className="block-label">
-                      {b.label}
-                    </div>
+                    <div className="block-label">{b.label}</div>
                     <div className="block-time">
                       {b.start}–{b.end}
                     </div>
                   </div>
                 ))}
-              {(!blocksByDay[day] ||
-                blocksByDay[day].length === 0) && (
+              {(!blocksByDay[day] || blocksByDay[day].length === 0) && (
                 <div className="timetable-empty">Free</div>
               )}
             </div>

@@ -1,6 +1,4 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { COURSES, DEPARTMENTS, YEARS } from "./data/courses.js";
-import { SECTIONS } from "./data/sections.js";
 
 import ScheduleSections from "./components/ScheduleSections.jsx";
 import PersonalTimeForm from "./components/PersonalTimeForm.jsx";
@@ -8,6 +6,10 @@ import Timetable from "./components/Timetable.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
 
 import { conflictBetweenSectionAndItems, conflictBetweenBlockAndItems, } from "./utils/scheduleUtils.js";
+
+// Get Course Information
+import { COURSES, DEPARTMENTS, YEARS } from "./data/courses.js";
+import { SECTIONS } from "./data/sections.js";
 
 const toggleTheme = () => {
   const root = document.documentElement;
@@ -46,7 +48,7 @@ function App() {
   }, []);
 
 
-  // student academic context
+  // Already Completed Courses
   const [completedInput, setCompletedInput] = useState(
     "ADM1300, MAT1300, ITI1121"
   );
@@ -113,16 +115,31 @@ function App() {
 
   const toggleBasket = (courseCode) => {
     setMessage("");
+
     setBasket((prev) => {
+      // If course is already in basket → remove it
       if (prev.includes(courseCode)) {
+        // Also remove its sections from the schedule
+        setSelectedSectionIds((prevIds) =>
+          prevIds.filter((id) => {
+            const sec = sectionsForTerm.find((s) => s.id === id);
+            // keep this section if we can't find it
+            // or if it belongs to a different course
+            return !sec || sec.courseCode !== courseCode;
+          })
+        );
+
         return prev.filter((c) => c !== courseCode);
       }
+
+      // Adding a course
       if (prev.length >= 10) {
         setMessage(
           "Basket limit reached (10 courses). Remove one to add another."
         );
         return prev;
       }
+
       return [...prev, courseCode];
     });
   };
@@ -367,6 +384,7 @@ function App() {
                           <span>Dept: {course.department}</span>
                           <span>Year: {course.year}</span>
                           <span>Credits: {course.credits}</span>
+                          <span>Instructor: {course.prof}</span>
                         </div>
                         <div className="course-prereqs">
                           {course.prereqs.length === 0 ? (
@@ -423,26 +441,40 @@ function App() {
               <ul className="basket-list">
                 {basketCourses.map((c) => (
                   <li key={c.code}>
-                    <div style={{ display: "flex", alignItems: "center"}}>
-                      <button
-                        className="btn btn-xs btn-ghost"
-                        onClick={() => toggleBasket(c.code)}
-                      >
-                        Remove
-                      </button>
-
-                      {/* Sections for this course */}
-                      <ScheduleSections
-                        courseCode={c.code}
-                        sectionsForTerm={sectionsForTerm}
-                        selectedSectionIds={selectedSectionIds}
-                        onAddSection={handleAddSection}
-                        onRemoveSection={handleRemoveSection}
-                      />
-                    </div>
+                    <ScheduleSections
+                      course={c}
+                      sectionsForTerm={sectionsForTerm}
+                      selectedSectionIds={selectedSectionIds}
+                      onAddSection={handleAddSection}
+                      onRemoveSection={handleRemoveSection}
+                      onRemoveCourse={() => toggleBasket(c.code)}
+                    />
                   </li>
                 ))}
               </ul>
+              // <ul className="basket-list">
+              //   {basketCourses.map((c) => (
+              //     <li key={c.code}>
+              //       <div style={{ display: "flex", alignItems: "center" }}>
+              //         <button
+              //           className="btn btn-xs btn-ghost"
+              //           onClick={() => toggleBasket(c.code)}
+              //         >
+              //           Remove
+              //         </button>
+
+              //         {/* Sections for this course — now a dropdown */}
+              //         <ScheduleSections
+              //           courseCode={c.code}
+              //           sectionsForTerm={sectionsForTerm}
+              //           selectedSectionIds={selectedSectionIds}
+              //           onAddSection={handleAddSection}
+              //           onRemoveSection={handleRemoveSection}
+              //         />
+              //       </div>
+              //     </li>
+              //   ))}
+              // </ul>
             )}
           </div>
           <div className="card schedule-grid">

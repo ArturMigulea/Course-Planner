@@ -1,0 +1,641 @@
+:root {
+  /* Typography */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+
+  /* Brand palette */
+  --color-garnet: #8f001a;
+  --color-garnet-secondary: #9c1c30;
+  --color-charcoal: #2d2d2c;
+  --color-charcoal-secondary: #3a3a37;
+  --color-warm-grey: #80746c;
+  --color-warm-grey-secondary: #908681;
+  --color-blue: #636d77;
+  --color-blue-secondary: #6d7983;
+  --color-green: #67796c;
+  --color-green-secondary: #728479;
+  --color-polar-grey: #f2f2f2;
+  --color-white: #ffffff;
+
+  /* LIGHT THEME (default) */
+  --bg-body: #f2f2f2;
+  --bg-surface: #ffffff;
+  --bg-surface-soft: #f7f7f7;
+
+  --border-subtle: rgba(144, 134, 129, 0.6);
+  --border-strong: #80746c;
+
+  --text-main: var(--color-charcoal);
+  --text-muted: var(--color-warm-grey-secondary);
+  --text-softer: #c0b6b0;
+
+  --accent-primary: var(--color-garnet);
+  --accent-primary-strong: var(--color-garnet-secondary);
+  --accent-focus: var(--color-garnet);
+
+  --accent-positive-bg: rgba(103, 121, 108, 0.14);
+  --accent-positive-text: var(--color-green);
+  --accent-warn-bg: rgba(156, 28, 48, 0.14);
+  --accent-warn-text: var(--color-garnet-secondary);
+
+  --timetable-course-bg: rgba(99, 109, 119, 0.12);
+  --timetable-course-border: var(--color-blue);
+  --timetable-personal-bg: rgba(103, 121, 108, 0.12);
+  --timetable-personal-border: var(--color-green);
+
+  --chip-badge-bg: var(--color-polar-grey);
+}
+
+/* DARK THEME – only active when data-theme="dark" is set */
+:root[data-theme="dark"] {
+  --bg-body: #050816;
+  --bg-surface: #020617;
+  --bg-surface-soft: #111827;
+
+  --border-subtle: #1f2937;
+  --border-strong: #4b5563;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-softer: #6b7280;
+
+  --accent-primary: var(--color-garnet);
+  --accent-primary-strong: var(--color-garnet-secondary);
+  --accent-focus: #f97373;
+
+  --accent-positive-bg: rgba(34, 197, 94, 0.18);
+  --accent-positive-text: #4ade80;
+  --accent-warn-bg: rgba(156, 28, 48, 0.22);
+  --accent-warn-text: #fecaca;
+
+  --timetable-course-bg: rgba(59, 130, 246, 0.18);
+  --timetable-course-border: #1d4ed8;
+  --timetable-personal-bg: rgba(234, 88, 12, 0.18);
+  --timetable-personal-border: #c2410c;
+
+  --chip-badge-bg: #1f2937;
+}
+
+/* Global base styles */
+:root {
+  color: var(--text-main);
+  background: var(--bg-body);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-main);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.app-root {
+  margin: 0 auto;
+  padding: 0px 40px;
+  color: var(--text-main);
+}
+
+.app-header {
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.8rem;
+  color: var(--accent-primary);
+}
+
+.app-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.course-list-card {
+  max-height: 380px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.course-list {
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Course rows */
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+/* Primary accent: Garnet for course codes */
+.course-code {
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-size: 0.9rem;
+}
+
+.course-title {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.course-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.course-prereqs {
+  margin-top: 4px;
+}
+
+/* Basket */
+.basket-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.basket-list li {
+  padding: 4px 0;
+}
+
+.basket-code {
+  font-weight: 600;
+  color: var(--accent-primary-strong);
+  font-size: 0.85rem;
+}
+
+.basket-title {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+.empty-state {
+  margin: 4px 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Sections list */
+.section-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  max-height: 220px;
+}
+
+.section-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-item:last-child {
+  border-bottom: none;
+}
+
+.section-title-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.section-course-code {
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-size: 0.85rem;
+}
+
+.section-id {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.section-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Personal block form */
+.personal-block-form .field-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Timetable */
+.timetable {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.timetable-header {
+  margin-bottom: 6px;
+}
+
+.timetable-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+/* Day columns */
+.timetable-day {
+  background: var(--bg-surface);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+}
+
+.timetable-day-header {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  background: var(--bg-surface-soft);
+  color: var(--text-main);
+}
+
+.timetable-day-body {
+  padding: 4px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timetable-empty {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Blocks in timetable */
+.timetable-block {
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 0.75rem;
+}
+
+.block-course {
+  background: var(--timetable-course-bg);
+  border: 1px solid var(--timetable-course-border);
+}
+
+.block-personal {
+  background: var(--timetable-personal-bg);
+  border: 1px solid var(--timetable-personal-border);
+}
+
+.block-label {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.block-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.app-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+  gap: 16px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  color: var(--text-main);
+}
+
+/* Cards / panels */
+.card {
+  background: var(--bg-surface);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(45, 45, 44, 0.12);
+}
+
+:root[data-theme="dark"] .card {
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.8);
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.2fr;
+  gap: 12px;
+}
+
+.schedule-column h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.term-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.hint {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Message / alert bar */
+.message-bar {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: var(--accent-warn-bg);
+  border: 1px solid var(--accent-primary-strong);
+  color: var(--accent-warn-text);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timetable-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .filters-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.field span {
+  color: var(--text-muted);
+}
+
+/* Inputs / selects */
+.field input,
+.field select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.field input::placeholder,
+.field select::placeholder {
+  color: var(--text-softer);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 1px;
+  border-color: var(--accent-focus);
+}
+
+.filters-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 8px;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  color: var(--text-main);
+}
+
+.checkbox-field input {
+  width: 14px;
+  height: 14px;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 100px;
+  border: 1px solid transparent;
+  padding: 4px 10px;
+  height: 50px;
+  width: 100px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+:root[data-theme="dark"] .btn:hover {
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.8);
+}
+
+/* Primary: Garnet */
+.btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary-strong);
+  color: var(--color-white);
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-strong);
+  border-color: var(--accent-primary-strong);
+}
+
+/* Secondary: garnet outline / light fill */
+.btn-secondary {
+  background: transparent;
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(143, 0, 26, 0.08);
+}
+
+/* Ghost: neutral outline */
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-surface-soft);
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  height: auto;
+}
+
+.btn-xs {
+  padding: 2px 8px;
+  font-size: 0.72rem;
+}
+
+/* Badge / pill treatments */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--chip-badge-bg);
+  font-size: 0.75rem;
+  color: var(--text-main);
+}
+
+/* Generic pill container */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+}
+
+/* OK state – uOttawa green */
+.pill-ok {
+  background: var(--accent-positive-bg);
+  color: var(--accent-positive-text);
+}
+
+/* Warn / error – uOttawa garnet */
+.pill-warn {
+  background: var(--accent-warn-bg);
+  color: var(--accent-warn-text);
+}
+
+/* Schedule sections / accordion in basket */
+.schedule-sections {
+  margin-top: 0px;
+}
+
+/* Header looks like a compact course row container */
+.accordion-header-course {
+  display: flex;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  text-align: left;
+  gap: 8px;
+}
+
+.accordion-header-course:hover {
+  background: var(--bg-surface-soft);
+}
+
+.accordion-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.accordion-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.accordion-icon {
+  font-size: 200%;
+  color: var(--text-muted);
+}
+
+/* Accordion section list in basket */
+.section-list-accordion {
+  margin-top: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* Ensure text area in section item grows nicely */
+.section-item .section-text {
+  flex: 1;
+  min-width: 0;
+}
