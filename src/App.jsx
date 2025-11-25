@@ -258,7 +258,7 @@ function App() {
       </header>
 
       <main className="app-layout">
-        {/* LEFT: search & basket */}
+        {/* LEFT: search */}
         <section className="panel">
           <h2>Course Search</h2>
 
@@ -359,25 +359,6 @@ function App() {
                         <div className="course-title-row">
                           <span className="course-code">{course.code}</span>
                           <span className="course-title">{course.title}</span>
-
-                          <label
-                            className="checkbox-field"
-                            style={{ marginLeft: "8px" }}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={hasSectionInTerm}
-                              onChange={(e) =>
-                                handleToggleCourseSchedule(
-                                  course.code,
-                                  e.target.checked
-                                )
-                              }
-                            />
-                            <span style={{ fontSize: "0.7rem" }}>
-                              On schedule
-                            </span>
-                          </label>
                         </div>
 
                         <div className="course-meta">
