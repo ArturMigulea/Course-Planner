@@ -119,6 +119,23 @@ small {
   font-size: 0.9rem;
 }
 
+.course-basket-rank-label {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.course-basket-rank-1 { color: red; }
+.course-basket-rank-2 { color: teal; }
+.course-basket-rank-3 { color: blue; }
+.course-basket-rank-4 { color: yellow; }
+.course-basket-rank-5 { color: orange; }
+.course-basket-rank-6 { color: purple; }
+.course-basket-rank-7 { color: aqua; }
+.course-basket-rank-8 { color: violet; }
+.course-basket-rank-9 { color: deeppink; }
+.course-basket-rank-10 { color: brown; }
+
+
 .course-list-card {
   max-height: 380px;
   overflow: hidden;
@@ -193,6 +210,10 @@ small {
   padding: 4px 0;
 }
 
+.basket-card {
+  width: 40%;
+}
+
 .basket-code {
   font-weight: 600;
   color: var(--accent-primary-strong);
@@ -248,6 +269,11 @@ small {
   color: var(--text-muted);
 }
 
+.section-prof {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 .section-meta {
   display: flex;
   flex-wrap: wrap;
@@ -263,63 +289,121 @@ small {
   gap: 8px;
 }
 
+/* ================================ TimeTable Grid ================================ */
+
 /* Timetable */
-.timetable {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+.weekly-calendar {
+  font-family: system-ui, sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+
+  width: 100%;
 }
 
-.timetable-header {
-  margin-bottom: 6px;
-}
+/* HEADER */
 
-.timetable-grid {
+.calendar-header {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
-  font-size: 0.8rem;
+  grid-template-columns: 60px repeat(7, 1fr); /* time + 7 days */
+  font-size: 0.9rem;
+}
+
+.time-column-header {
+  border-right: 1px solid #ccc;
+}
+
+.day-column-header {
+  padding: 6px 4px;
+  text-align: center;
+  border-right: 1px solid #d0d4e0;
+  font-weight: 600;
+}
+
+/* BODY */
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: 60px 1fr; /* time column + day columns */
+  height: 700px; /* total height of grid; adjust */
+}
+
+/* Time column */
+
+.time-column {
+  border-right: 1px solid #ccc;
+  position: relative;
+}
+
+.time-slot-label {
+  height: calc(100% / 14); /* if 14 hours displayed; adjust if you change START/END */
+  font-size: 0.7rem;
+  text-align: right;
+  padding-right: 4px;
+  box-sizing: border-box;
 }
 
 /* Day columns */
-.timetable-day {
-  background: var(--bg-surface);
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  min-height: 180px;
+
+.day-columns {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
 }
 
-.timetable-day-header {
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--border-subtle);
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.8rem;
-  background: var(--bg-surface-soft);
-  color: var(--text-main);
+.day-column {
+  position: relative;
+  border-right: 1px solid #eee;
+  height: 100%;
 }
 
-.timetable-day-body {
-  padding: 4px 4px 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* horizontal lines for hours */
+.day-column .hour-line {
+  border-top: 1px solid #f0f0f0;
+  height: calc(100% / 14);
+  box-sizing: border-box;
 }
 
-.timetable-empty {
-  margin-top: 4px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-align: center;
+.meeting-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  overflow: hidden;
+  
+  color: var(--color-charcoal);
 }
 
-/* Blocks in timetable */
-.timetable-block {
-  border-radius: 6px;
-  padding: 3px 5px;
-  font-size: 0.75rem;
+.course-rank-1 { background: red; }
+.course-rank-2 { background: teal; }
+.course-rank-3 { background: blue; }
+.course-rank-4 { background: yellow; }
+.course-rank-5 { background: orange; }
+.course-rank-6 { background: purple; }
+.course-rank-7 { background: aqua; }
+.course-rank-8 { background: violet; }
+.course-rank-9 { background: deeppink; }
+.course-rank-10 { background: brown; }
+
+.personal-block {
+  background: rgb(255, 215, 215);
+  border-color: rgb(255, 215, 215);
+}
+
+.meeting-type {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.meeting-time {
+  font-size: 0.7rem;
+}
+
+.meeting-instructor {
+  font-size: 0.65rem;
 }
 
 .block-course {
@@ -342,9 +426,23 @@ small {
   color: var(--text-muted);
 }
 
+/* ================================ Main App Layout ================================ */
+
+/* Left panel default state */
+.left-panel {
+  transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease;
+  width: 35%;
+}
+
+/* Right panel should take all remaining space */
+.right-panel {
+  flex: 1;
+}
+
+
 .app-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+  display: flex;
+  /* grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr); */
   gap: 16px;
 }
 
@@ -375,9 +473,7 @@ small {
 }
 
 .schedule-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1.2fr;
-  gap: 12px;
+  width: 100%;
 }
 
 .schedule-column h3 {
@@ -604,7 +700,6 @@ small {
   background: var(--bg-surface);
   cursor: pointer;
   text-align: left;
-  gap: 8px;
 }
 
 .accordion-header-course:hover {
@@ -638,4 +733,46 @@ small {
 .section-item .section-text {
   flex: 1;
   min-width: 0;
+}
+
+.toast-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.toast-panel {
+  width: 95%;
+  max-width: 420px;
+  /* background: white; */
+  padding: 1rem;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  animation: slideUp 0.25s ease;
+  position: relative;
+}
+
+.toast-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.8rem;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(120px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.basket-item-dragging {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

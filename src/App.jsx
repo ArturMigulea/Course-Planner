@@ -1,9 +1,11 @@
 import React, { useMemo, useState, useEffect } from "react";
 
-import ScheduleSections from "./components/ScheduleSections.jsx";
-import PersonalTimeForm from "./components/PersonalTimeForm.jsx";
+import SelectedCourses from "./components/SelectedCourses.jsx";
 import Timetable from "./components/Timetable.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
+import AddPersonalTimeToast from "./components/AddPersonalTimeToast.jsx";
+
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 import { conflictBetweenSectionAndItems, conflictBetweenBlockAndItems, } from "./utils/scheduleUtils.js";
 
@@ -31,6 +33,7 @@ function App() {
   const [year, setYear] = useState("ALL");
   const [eligibleOnly, setEligibleOnly] = useState(false);
 
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
 
   // Auto set window to dark mode
   useEffect(() => {
@@ -47,6 +50,28 @@ function App() {
     }
   }, []);
 
+  const handleDragEnd = (result) => {
+    const { source, destination } = result;
+
+    // dropped outside the list
+    if (!destination) return;
+
+    // no position change
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    // Reorder the basket (array of course codes)
+    setBasket((prev) => {
+      const items = Array.from(prev); // e.g. ["ADM1300", "MAT1300", ...]
+      const [moved] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, moved);
+      return items;
+    });
+  };
 
   // Already Completed Courses
   const [completedInput, setCompletedInput] = useState(
@@ -144,32 +169,43 @@ function App() {
     });
   };
 
+  // Adding a course to the basket
   const handleAddSection = (sectionId) => {
+    // Clear the error message
     setMessage("");
+
+    // Find the course in the basket array
     const section = sectionsForTerm.find((s) => s.id === sectionId);
+
+    // If it has not been found, do not do anything
     if (!section) return;
 
+    // Check for conflicts in the term
     const conflictItem = conflictBetweenSectionAndItems(
       section,
       scheduledItems,
       selectedTerm
     );
 
+    // If there were term conflicts, then display an error
     if (conflictItem) {
       setMessage(
-        `Time conflict: ${section.courseCode} overlaps with ${
-          conflictItem.courseCode || conflictItem.label
+        `Time conflict: ${section.id} overlaps with ${
+          conflictItem.id || conflictItem.label
         }.`
       );
       return;
     }
 
+    // Add the section ID to the basket array
     setSelectedSectionIds((prev) =>
       prev.includes(sectionId) ? prev : [...prev, sectionId]
     );
   };
 
+  // Removing a course from the basket
   const handleRemoveSection = (sectionId) => {
+    // Loop through every ID and remove the one ID being removed
     setSelectedSectionIds((prev) => prev.filter((id) => id !== sectionId));
   };
 
@@ -185,7 +221,7 @@ function App() {
     if (conflictItem) {
       setMessage(
         `Personal block conflicts with ${
-          conflictItem.courseCode || conflictItem.label
+          conflictItem.id || conflictItem.label
         }.`
       );
       return;
@@ -241,9 +277,13 @@ function App() {
     }
   };
 
-  const basketCourses = basket
-    .map((code) => COURSES.find((c) => c.code === code))
-    .filter(Boolean);
+  const basketCourses = useMemo(
+    () =>
+      basket
+        .map((code) => COURSES.find((c) => c.code === code))
+        .filter(Boolean),
+    [basket]
+  );
 
   return (
     <div className="app-root">
@@ -257,198 +297,241 @@ function App() {
         </p>
       </header>
 
+      {/* Toggle button sitting between panels */}
+      <button
+        className="btn btn-primary btn-xs"
+        onClick={() => setIsSearchOpen((prev) => !prev)}
+        aria-label={isSearchOpen ? "Hide search panel" : "Show search panel"}
+      >
+        {isSearchOpen ? "Hide Search" : "Open Search"}
+      </button>
+
       <main className="app-layout">
+
         {/* LEFT: search */}
-        <section className="panel">
-          <h2>Course Search</h2>
+        {isSearchOpen && (
+          <section className={`panel left-panel`}>
+            <h2>Course Search</h2>
 
-          <div className="card">
-            <label className="field">
-              <span>Completed courses (for eligibility)</span>
-              <input
-                type="text"
-                value={completedInput}
-                onChange={(e) => setCompletedInput(e.target.value)}
-                placeholder="e.g. ADM1300, MAT1300, ITI1121"
-              />
-              <small>
-                Used to determine which courses you are eligible to take based
-                on prerequisites.
-              </small>
-            </label>
-          </div>
-
-          <div className="card"> 
-            <div className="filters-card">
-              <div className="filters-row">
-                <label className="field">
-                  <span>Search</span>
-                  <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Code or title (e.g. ADM1300)"
-                  />
-                </label>
-
-                <label className="field">
-                  <span>Department</span>
-                  <select
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                  >
-                    <option value="ALL">All</option>
-                    {DEPARTMENTS.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="field">
-                  <span>Year level</span>
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option value="ALL">All</option>
-                    {YEARS.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <label className="checkbox-field">
+            <div className="card">
+              <label className="field">
+                <span>Completed courses (for eligibility)</span>
                 <input
-                  type="checkbox"
-                  checked={eligibleOnly}
-                  onChange={(e) => setEligibleOnly(e.target.checked)}
+                  type="text"
+                  value={completedInput}
+                  onChange={(e) => setCompletedInput(e.target.value)}
+                  placeholder="e.g. ADM1300, MAT1300, ITI1121"
                 />
-                <span>Show only courses I&apos;m eligible for</span>
+                <small>
+                  Used to determine which courses you are eligible to take based
+                  on prerequisites.
+                </small>
               </label>
             </div>
 
-            <div className="course-list-card">
-              <div className="course-list-header">
-                <h3>
-                  Results <span className="badge">{filteredCourses.length}</span>
-                </h3>
+            <div className="card">
+              <div className="filters-card">
+                <div className="filters-row">
+                  <label className="field">
+                    <span>Search</span>
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Code or title (e.g. ADM1300)"
+                    />
+                  </label>
+
+                  <label className="field">
+                    <span>Department</span>
+                    <select
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                    >
+                      <option value="ALL">All</option>
+                      {DEPARTMENTS.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="field">
+                    <span>Year level</span>
+                    <select
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                    >
+                      <option value="ALL">All</option>
+                      {YEARS.map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <label className="checkbox-field">
+                  <input
+                    type="checkbox"
+                    checked={eligibleOnly}
+                    onChange={(e) => setEligibleOnly(e.target.checked)}
+                  />
+                  <span>Show only courses I&apos;m eligible for</span>
+                </label>
               </div>
 
-              <div className="course-list">
-                {filteredCourses.map((course) => {
-                  const inBasket = basket.includes(course.code);
-                  const eligible = isEligible(course);
-                  const missingPrereqs = course.prereqs.filter(
-                    (p) => !completedSet.has(p)
-                  );
+              <div className="course-list-card">
+                <div className="course-list-header">
+                  <h3>
+                    Results <span className="badge">{filteredCourses.length}</span>
+                  </h3>
+                </div>
 
-                  const hasSectionInTerm = sectionsForTerm.some(
-                    (s) =>
-                      s.courseCode === course.code &&
-                      selectedSectionIds.includes(s.id)
-                  );
+                <div className="course-list">
+                  {filteredCourses.map((course) => {
+                    const inBasket = basket.includes(course.code);
+                    const eligible = isEligible(course);
+                    const missingPrereqs = course.prereqs.filter(
+                      (p) => !completedSet.has(p)
+                    );
 
-                  return (
-                    <div key={course.code} className="course-item">
-                      <div className="course-main">
-                        <div className="course-title-row">
-                          <span className="course-code">{course.code}</span>
-                          <span className="course-title">{course.title}</span>
+                    const hasSectionInTerm = sectionsForTerm.some(
+                      (s) =>
+                        s.courseCode === course.code &&
+                        selectedSectionIds.includes(s.id)
+                    );
+
+                    return (
+                      <div key={course.code} className="course-item">
+                        <div className="course-main">
+                          <div className="course-title-row">
+                            <span className="course-code">{course.code}</span>
+                            <span className="course-title">{course.title}</span>
+                          </div>
+
+                          <div className="course-meta">
+                            <span>Dept: {course.department}</span>
+                            <span>Year: {course.year}</span>
+                            <span>Credits: {course.credits}</span>
+                            <span>Instructor: {course.prof}</span>
+                          </div>
+                          <div className="course-prereqs">
+                            {course.prereqs.length === 0 ? (
+                              <span className="pill pill-ok">
+                                No prerequisites
+                              </span>
+                            ) : eligible ? (
+                              <span className="pill pill-ok">
+                                Eligible ✓ (prereqs met)
+                              </span>
+                            ) : (
+                              <span className="pill pill-warn">
+                                Missing: {missingPrereqs.join(", ")}
+                              </span>
+                            )}
+                          </div>
                         </div>
-
-                        <div className="course-meta">
-                          <span>Dept: {course.department}</span>
-                          <span>Year: {course.year}</span>
-                          <span>Credits: {course.credits}</span>
-                          <span>Instructor: {course.prof}</span>
-                        </div>
-                        <div className="course-prereqs">
-                          {course.prereqs.length === 0 ? (
-                            <span className="pill pill-ok">
-                              No prerequisites
-                            </span>
-                          ) : eligible ? (
-                            <span className="pill pill-ok">
-                              Eligible ✓ (prereqs met)
-                            </span>
-                          ) : (
-                            <span className="pill pill-warn">
-                              Missing: {missingPrereqs.join(", ")}
-                            </span>
-                          )}
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <button
+                            className={`btn btn-xs ${
+                              inBasket ? "btn-secondary" : "btn-primary"
+                            }`}
+                            onClick={() => toggleBasket(course.code)}
+                          >
+                            {inBasket ? "Remove" : "Add To Basket"}
+                          </button>
                         </div>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <button
-                          className={`btn btn-xs ${
-                            inBasket ? "btn-secondary" : "btn-primary"
-                          }`}
-                          onClick={() => toggleBasket(course.code)}
-                        >
-                          {inBasket ? "Remove" : "Add To Basket"}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-                {filteredCourses.length === 0 && (
-                  <p className="empty-state">
-                    No courses match your filters.
-                  </p>
-                )}
+                    );
+                  })}
+                  {filteredCourses.length === 0 && (
+                    <p className="empty-state">
+                      No courses match your filters.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* RIGHT: schedule builder */}
-        <section className="panel">
+        <section className="panel right-panel">
           <h2>Dynamic Schedule Builder</h2>
-          <div className="card basket-card">
-            <div className="card-header-row">
-              <h3>Course basket</h3>
-              <span className="badge">{basket.length} / 10</span>
-            </div>
-            {basketCourses.length === 0 ? (
-              <p className="empty-state">
-                Add up to 10 courses to compare and schedule.
-              </p>
-            ) : (
-              <ul className="basket-list">
-                {basketCourses.map((c) => (
-                  <li key={c.code}>
-                    <ScheduleSections
-                      course={c}
-                      sectionsForTerm={sectionsForTerm}
-                      selectedSectionIds={selectedSectionIds}
-                      onAddSection={handleAddSection}
-                      onRemoveSection={handleRemoveSection}
-                      onRemoveCourse={() => toggleBasket(c.code)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="card schedule-grid">
-            <div className="schedule-column">
-              <PersonalTimeForm onAdd={handleAddPersonalBlock} />
+          {message && <div className="message-bar">{message}</div>}
+          <div style={{ display: "flex", gap: "10px" }}>
+            <div className="card basket-card">
+              <div className="card-header-row">
+                <h3>Course basket</h3>
+                <span className="badge">{basket.length} / 10</span>
+              </div>
+
+              {basketCourses.length === 0 ? (
+                <p className="empty-state">
+                  Add up to 10 courses to compare and schedule.
+                </p>
+              ) : (
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <Droppable droppableId="basket-droppable">
+                    {(provided) => (
+                      <ul
+                        className="basket-list"
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        {basketCourses.map((c, index) => (
+                          <Draggable
+                            key={c.code}
+                            draggableId={c.code}
+                            index={index}
+                          >
+                            {(providedDrag, snapshot) => (
+                              <li
+                                ref={providedDrag.innerRef}
+                                {...providedDrag.draggableProps}
+                                className={
+                                  "basket-item" +
+                                  (snapshot.isDragging ? " basket-item-dragging" : "")
+                                }
+                              >
+                                <SelectedCourses
+                                  basketIndex={index + 1}
+                                  course={c}
+                                  sectionsForTerm={sectionsForTerm}
+                                  selectedSectionIds={selectedSectionIds}
+                                  onAddSection={handleAddSection}
+                                  onRemoveSection={handleRemoveSection}
+                                  onRemoveCourse={() => toggleBasket(c.code)}
+                                  // 👇 Only the header (inside SelectedCourses) is the drag handle
+                                  dragHandleProps={providedDrag.dragHandleProps}
+                                />
+                              </li>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </ul>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
+
+              <div className="schedule-column">
+                <AddPersonalTimeToast onAdd={handleAddPersonalBlock} />
+              </div>
             </div>
 
-            <div className="schedule-column timetable-column">
+            <div className="card schedule-grid">
               <Timetable
-                term={selectedTerm}
                 sections={chosenSections}
-                personalBlocks={personalBlocks}
+                personalSections={personalBlocks}
+                basket={basket}
               />
             </div>
           </div>
-          {message && <div className="message-bar">{message}</div>}
         </section>
       </main>
     </div>
