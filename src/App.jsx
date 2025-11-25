@@ -452,29 +452,6 @@ function App() {
                   </li>
                 ))}
               </ul>
-              // <ul className="basket-list">
-              //   {basketCourses.map((c) => (
-              //     <li key={c.code}>
-              //       <div style={{ display: "flex", alignItems: "center" }}>
-              //         <button
-              //           className="btn btn-xs btn-ghost"
-              //           onClick={() => toggleBasket(c.code)}
-              //         >
-              //           Remove
-              //         </button>
-
-              //         {/* Sections for this course — now a dropdown */}
-              //         <ScheduleSections
-              //           courseCode={c.code}
-              //           sectionsForTerm={sectionsForTerm}
-              //           selectedSectionIds={selectedSectionIds}
-              //           onAddSection={handleAddSection}
-              //           onRemoveSection={handleRemoveSection}
-              //         />
-              //       </div>
-              //     </li>
-              //   ))}
-              // </ul>
             )}
           </div>
           <div className="card schedule-grid">
