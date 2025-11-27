@@ -330,7 +330,7 @@ function App() {
                 </button>
               </div>
 
-              <div className="card">
+              <div className="card" style={{ marginBottom: "5px" }}>
                 <label className="field">
                   <span>Completed courses (for eligibility)</span>
                   <input

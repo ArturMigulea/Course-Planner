@@ -116,7 +116,7 @@
   list-style: none;
   padding: 0;
   margin: 6px 0 0;
-  max-height: 220px;
+  /* max-height: 220px; */
 }
 
 .section-item {
@@ -164,6 +164,7 @@
 /* Schedule sections / accordion in basket */
 .schedule-sections {
   margin-top: 0px;
+  height: fit-content;
 }
 
 /* Header looks like a compact course row container */
