@@ -11,7 +11,11 @@ export default function AddPersonalTimeToast({ onAdd }) {
 
   return (
     <>
-      <button className="btn btn-primary toast-btn" onClick={() => setOpen(true)}>
+      <button 
+        className="btn btn-primary" 
+        onClick={() => setOpen(true)} 
+        style={{ whiteSpace: "nowrap", width: "auto" }}
+      >
         + Add Personal Time
       </button>
 

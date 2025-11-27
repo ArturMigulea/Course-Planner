@@ -297,172 +297,213 @@ function App() {
         </p>
       </header>
 
-      {/* Toggle button sitting between panels */}
-      <button
-        className="btn btn-primary btn-xs"
-        onClick={() => setIsSearchOpen((prev) => !prev)}
-        aria-label={isSearchOpen ? "Hide search panel" : "Show search panel"}
-      >
-        {isSearchOpen ? "Hide Search" : "Open Search"}
-      </button>
-
       <main className="app-layout">
-
         {/* LEFT: search */}
-        {isSearchOpen && (
-          <section className={`panel left-panel`}>
-            <h2>Course Search</h2>
+          <section
+            className="panel left-panel"
+            style={{
+              width: isSearchOpen ? "35%" : "0",
+              minWidth: isSearchOpen ? "260px" : "0",
+              padding: isSearchOpen ? "0 14px" : "0",
+              overflow: "hidden",
+              transition: "width 0.25s ease, min-width 0.25s ease, padding 0.25s ease",
+            }}
+          >
+          {/* Conditionally rendered SEARCH PANEL */}
+          {isSearchOpen && (
+            <>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center", // center looks nicer than baseline
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <h2>Course Search</h2>
+                <button
+                  className="btn btn-primary btn-xs"
+                  onClick={() => setIsSearchOpen((prev) => !prev)}
+                  aria-label={isSearchOpen ? "Hide search panel" : "Show search panel"}
+                >
+                  {isSearchOpen ? "Hide Search" : "Open Search"}
+                </button>
+              </div>
 
-            <div className="card">
-              <label className="field">
-                <span>Completed courses (for eligibility)</span>
-                <input
-                  type="text"
-                  value={completedInput}
-                  onChange={(e) => setCompletedInput(e.target.value)}
-                  placeholder="e.g. ADM1300, MAT1300, ITI1121"
-                />
-                <small>
-                  Used to determine which courses you are eligible to take based
-                  on prerequisites.
-                </small>
-              </label>
-            </div>
-
-            <div className="card">
-              <div className="filters-card">
-                <div className="filters-row">
-                  <label className="field">
-                    <span>Search</span>
-                    <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Code or title (e.g. ADM1300)"
-                    />
-                  </label>
-
-                  <label className="field">
-                    <span>Department</span>
-                    <select
-                      value={department}
-                      onChange={(e) => setDepartment(e.target.value)}
-                    >
-                      <option value="ALL">All</option>
-                      {DEPARTMENTS.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label className="field">
-                    <span>Year level</span>
-                    <select
-                      value={year}
-                      onChange={(e) => setYear(e.target.value)}
-                    >
-                      <option value="ALL">All</option>
-                      {YEARS.map((y) => (
-                        <option key={y} value={y}>
-                          {y}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                <label className="checkbox-field">
+              <div className="card">
+                <label className="field">
+                  <span>Completed courses (for eligibility)</span>
                   <input
-                    type="checkbox"
-                    checked={eligibleOnly}
-                    onChange={(e) => setEligibleOnly(e.target.checked)}
+                    type="text"
+                    value={completedInput}
+                    onChange={(e) => setCompletedInput(e.target.value)}
+                    placeholder="e.g. ADM1300, MAT1300, ITI1121"
                   />
-                  <span>Show only courses I&apos;m eligible for</span>
+                  <small>
+                    Used to determine which courses you are eligible to take based on
+                    prerequisites.
+                  </small>
                 </label>
               </div>
 
-              <div className="course-list-card">
-                <div className="course-list-header">
-                  <h3>
-                    Results <span className="badge">{filteredCourses.length}</span>
-                  </h3>
+              <div className="card">
+                <div className="filters-card">
+                  <div className="filters-row">
+                    <label className="field">
+                      <span>Search</span>
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Code or title (e.g. ADM1300)"
+                      />
+                    </label>
+
+                    <label className="field">
+                      <span>Department</span>
+                      <select
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                      >
+                        <option value="ALL">All</option>
+                        {DEPARTMENTS.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="field">
+                      <span>Year level</span>
+                      <select
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                      >
+                        <option value="ALL">All</option>
+                        {YEARS.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="checkbox-field">
+                    <input
+                      type="checkbox"
+                      checked={eligibleOnly}
+                      onChange={(e) => setEligibleOnly(e.target.checked)}
+                    />
+                    <span>Show only courses I&apos;m eligible for</span>
+                  </label>
                 </div>
 
-                <div className="course-list">
-                  {filteredCourses.map((course) => {
-                    const inBasket = basket.includes(course.code);
-                    const eligible = isEligible(course);
-                    const missingPrereqs = course.prereqs.filter(
-                      (p) => !completedSet.has(p)
-                    );
+                <div className="course-list-card">
+                  <div className="course-list-header">
+                    <h3>
+                      Results <span className="badge">{filteredCourses.length}</span>
+                    </h3>
+                  </div>
 
-                    const hasSectionInTerm = sectionsForTerm.some(
-                      (s) =>
-                        s.courseCode === course.code &&
-                        selectedSectionIds.includes(s.id)
-                    );
+                  <div className="course-list">
+                    {filteredCourses.map((course) => {
+                      const inBasket = basket.includes(course.code);
+                      const eligible = isEligible(course);
+                      const missingPrereqs = course.prereqs.filter(
+                        (p) => !completedSet.has(p)
+                      );
 
-                    return (
-                      <div key={course.code} className="course-item">
-                        <div className="course-main">
-                          <div className="course-title-row">
-                            <span className="course-code">{course.code}</span>
-                            <span className="course-title">{course.title}</span>
+                      const hasSectionInTerm = sectionsForTerm.some(
+                        (s) =>
+                          s.courseCode === course.code &&
+                          selectedSectionIds.includes(s.id)
+                      );
+
+                      return (
+                        <div key={course.code} className="course-item">
+                          <div className="course-main">
+                            <div className="course-title-row">
+                              <span className="course-code">{course.code}</span>
+                              <span className="course-title">{course.title}</span>
+                            </div>
+
+                            <div className="course-meta">
+                              <span>Dept: {course.department}</span>
+                              <span>Year: {course.year}</span>
+                              <span>Credits: {course.credits}</span>
+                              <span>Instructor: {course.prof}</span>
+                            </div>
+                            <div className="course-prereqs">
+                              {course.prereqs.length === 0 ? (
+                                <span className="pill pill-ok">
+                                  No prerequisites
+                                </span>
+                              ) : eligible ? (
+                                <span className="pill pill-ok">
+                                  Eligible ✓ (prereqs met)
+                                </span>
+                              ) : (
+                                <span className="pill pill-warn">
+                                  Missing: {missingPrereqs.join(", ")}
+                                </span>
+                              )}
+                            </div>
                           </div>
-
-                          <div className="course-meta">
-                            <span>Dept: {course.department}</span>
-                            <span>Year: {course.year}</span>
-                            <span>Credits: {course.credits}</span>
-                            <span>Instructor: {course.prof}</span>
-                          </div>
-                          <div className="course-prereqs">
-                            {course.prereqs.length === 0 ? (
-                              <span className="pill pill-ok">
-                                No prerequisites
-                              </span>
-                            ) : eligible ? (
-                              <span className="pill pill-ok">
-                                Eligible ✓ (prereqs met)
-                              </span>
-                            ) : (
-                              <span className="pill pill-warn">
-                                Missing: {missingPrereqs.join(", ")}
-                              </span>
-                            )}
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <button
+                              className={`btn btn-xs ${
+                                inBasket ? "btn-secondary" : "btn-primary"
+                              }`}
+                              onClick={() => toggleBasket(course.code)}
+                            >
+                              {inBasket ? "Remove" : "Add To Basket"}
+                            </button>
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <button
-                            className={`btn btn-xs ${
-                              inBasket ? "btn-secondary" : "btn-primary"
-                            }`}
-                            onClick={() => toggleBasket(course.code)}
-                          >
-                            {inBasket ? "Remove" : "Add To Basket"}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {filteredCourses.length === 0 && (
-                    <p className="empty-state">
-                      No courses match your filters.
-                    </p>
-                  )}
+                      );
+                    })}
+                    {filteredCourses.length === 0 && (
+                      <p className="empty-state">
+                        No courses match your filters.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        )}
+            </>
+          )}
+        </section>
 
         {/* RIGHT: schedule builder */}
-        <section className="panel right-panel">
-          <h2>Dynamic Schedule Builder</h2>
+        <section className="right-panel">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <button
+              className="btn btn-primary btn-xs"
+              onClick={() => setIsSearchOpen((prev) => !prev)}
+              aria-label={isSearchOpen ? "Hide search panel" : "Show search panel"}
+              style={{
+                visibility: isSearchOpen ? "hidden" : "visible",
+              }}
+            >
+              {isSearchOpen ? "Hide Search" : "Open Search"}
+            </button>
+
+            <div className="schedule-column">
+              <AddPersonalTimeToast onAdd={handleAddPersonalBlock} />
+            </div>
+          </div>
+
           {message && <div className="message-bar">{message}</div>}
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "10px", height: "100%"}}>
             <div className="card basket-card">
               <div className="card-header-row">
                 <h3>Course basket</h3>
@@ -505,7 +546,6 @@ function App() {
                                   onAddSection={handleAddSection}
                                   onRemoveSection={handleRemoveSection}
                                   onRemoveCourse={() => toggleBasket(c.code)}
-                                  // 👇 Only the header (inside SelectedCourses) is the drag handle
                                   dragHandleProps={providedDrag.dragHandleProps}
                                 />
                               </li>
@@ -518,10 +558,6 @@ function App() {
                   </Droppable>
                 </DragDropContext>
               )}
-
-              <div className="schedule-column">
-                <AddPersonalTimeToast onAdd={handleAddPersonalBlock} />
-              </div>
             </div>
 
             <div className="card schedule-grid">

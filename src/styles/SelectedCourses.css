@@ -1,0 +1,212 @@
+.course-basket-rank-label {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.course-basket-rank-1 { color: var(--meeting-rank-1); }
+.course-basket-rank-2 { color: var(--meeting-rank-2); }
+.course-basket-rank-3 { color: var(--meeting-rank-3); }
+.course-basket-rank-4 { color: var(--meeting-rank-4); }
+.course-basket-rank-5 { color: var(--meeting-rank-5); }
+.course-basket-rank-6 { color: var(--meeting-rank-6); }
+.course-basket-rank-7 { color: var(--meeting-rank-7); }
+.course-basket-rank-8 { color: var(--meeting-rank-8); }
+.course-basket-rank-9 { color: var(--meeting-rank-9); }
+.course-basket-rank-10 { color: var(--meeting-rank-10); }
+
+.course-list-card {
+  max-height: 380px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.course-list {
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Course rows */
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+
+/* Primary accent: Garnet for course codes */
+.course-code {
+  font-weight: 600;
+  color: var(--accent-primary);
+  font-size: 0.9rem;
+}
+
+.course-title {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.course-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.course-prereqs {
+  margin-top: 4px;
+}
+
+/* Basket */
+.basket-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.basket-list li {
+  padding: 4px 0;
+}
+
+.basket-card {
+  width: 40%;
+  height: auto;
+}
+
+.basket-code {
+  font-weight: 600;
+  color: var(--accent-primary-strong);
+  font-size: 0.85rem;
+}
+
+.basket-title {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+.empty-state {
+  margin: 4px 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Sections list */
+.section-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  max-height: 220px;
+}
+
+.section-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-item:last-child {
+  border-bottom: none;
+}
+
+.section-title-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.section-course-code {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.section-id {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.section-prof {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.section-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Schedule sections / accordion in basket */
+.schedule-sections {
+  margin-top: 0px;
+}
+
+/* Header looks like a compact course row container */
+.accordion-header-course {
+  display: flex;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordion-header-course:hover {
+  background: var(--bg-surface-soft);
+}
+
+.accordion-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.accordion-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.accordion-icon {
+  font-size: 200%;
+  color: var(--text-muted);
+}
+
+/* Accordion section list in basket */
+.section-list-accordion {
+  margin-top: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* Ensure text area in section item grows nicely */
+.section-item .section-text {
+  flex: 1;
+  min-width: 0;
+}
+

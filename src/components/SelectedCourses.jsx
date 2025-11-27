@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import "../styles/SelectedCourses.css"
+
 function SelectedCourses({
   basketIndex,
   course,

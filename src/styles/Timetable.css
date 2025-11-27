@@ -1,0 +1,135 @@
+/* ================================ TimeTable Grid ================================ */
+
+/* Timetable */
+.weekly-calendar {
+  font-family: system-ui, sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+
+  width: 100%;
+}
+
+/* HEADER */
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr); /* time + 7 days */
+  font-size: 0.9rem;
+}
+
+.time-column-header {
+  border-right: 1px solid #ccc;
+}
+
+.day-column-header {
+  padding: 6px 4px;
+  text-align: center;
+  border-right: 1px solid #d0d4e0;
+  font-weight: 600;
+}
+
+/* BODY */
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: 60px 1fr; /* time column + day columns */
+  height: 72vh; /* total height of grid; adjust */
+}
+
+/* Time column */
+
+.time-column {
+  border-right: 1px solid #ccc;
+  position: relative;
+}
+
+.time-slot-label {
+  height: calc(100% / 14); /* if 14 hours displayed; adjust if you change START/END */
+  font-size: 0.7rem;
+  text-align: right;
+  padding-right: 4px;
+  box-sizing: border-box;
+}
+
+/* Day columns */
+
+.day-columns {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  position: relative;
+}
+
+.day-column {
+  position: relative;
+  border-right: 1px solid #eee;
+}
+
+/* horizontal lines for hours */
+.day-column .hour-line {
+  border-top: 1px solid #f0f0f0;
+  height: calc(100% / 14);
+  box-sizing: border-box;
+}
+
+.meeting-block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  padding: 0 5px 0 5px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-size: 50%;
+  overflow: hidden;
+  
+  color: var(--text-main);
+}
+
+.course-rank-1 { background: var(--meeting-rank-1); }
+.course-rank-2 { background: var(--meeting-rank-2); }
+.course-rank-3 { background: var(--meeting-rank-3); }
+.course-rank-4 { background: var(--meeting-rank-4); }
+.course-rank-5 { background: var(--meeting-rank-5); }
+.course-rank-6 { background: var(--meeting-rank-6); }
+.course-rank-7 { background: var(--meeting-rank-7); }
+.course-rank-8 { background: var(--meeting-rank-8); }
+.course-rank-9 { background: var(--meeting-rank-9); }
+.course-rank-10 { background: var(--meeting-rank-10); }
+
+.personal-block {
+  background: rgb(255, 215, 215);
+  border-color: rgb(255, 215, 215);
+}
+
+.meeting-type {
+  /* font-size: 0.65rem; */
+  text-transform: uppercase;
+}
+
+.meeting-time {
+  /* font-size: 0.7rem; */
+}
+
+.meeting-instructor {
+  /* font-size: 0.65rem; */
+}
+
+.block-course {
+  background: var(--timetable-course-bg);
+  border: 1px solid var(--timetable-course-border);
+}
+
+.block-personal {
+  background: var(--timetable-personal-bg);
+  border: 1px solid var(--timetable-personal-border);
+}
+
+.block-label {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.block-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}

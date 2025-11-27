@@ -1,6 +1,8 @@
 import React from "react";
 import { DAYS, toMinutes } from "../utils/scheduleUtils";
 
+import "../styles/Timetable.css";
+
 // Config – adjust to your campus schedule
 const DAY_LABELS = DAYS;           // or DAYS.slice(0, 5) for Mon–Fri only
 const START_TIME = "08:00";        // first time shown on the grid
@@ -10,6 +12,8 @@ const HOUR_STEP = 1;               // 1-hour labels on the left
 const startMinutes = toMinutes(START_TIME);
 const endMinutes = toMinutes(END_TIME);
 const totalMinutes = endMinutes - startMinutes;
+
+const TOTAL_HOURS = (endMinutes - startMinutes) / 60;
 
 /**
  * Flatten sections into a list of meetings we can render.
@@ -114,7 +118,7 @@ function TimeTable({ sections, personalSections, basket }) {
         {/* Time labels on the left */}
         <div className="time-column">
           {timeLabels.map((t) => (
-            <div key={t} className="time-slot-label">
+            <div key={t} className="time-slot-label" >
               {t}
             </div>
           ))}
